@@ -41,17 +41,14 @@ jobs:
           docker push $IMAGE_URI
 
       - name: SSH into EC2 and Deploy
-        uses: appleboy/ssh-action@v1.0.0
+        uses: appleboy/ssh-action@v1.0.0  # EC2에 SSH로 접속하여 명령어를 실행하기 위한 액션
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ec2-user
-          key: ${{ secrets.EC2_KEY }}
+          host: ${{ secrets.EC2_HOST }}  # EC2 접속 주소 (ex. ec2-user@<퍼블릭 IP>)
+          username: ec2-user  # Amazon Linux 기본 사용자명
+          key: ${{ secrets.EC2_KEY }}  # base64로 인코딩된 pem 키 (GitHub Secrets에 등록된 값)
           script: |
-            aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-            aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            aws configure set region ap-southeast-2
-            aws ecr get-login-password --region ap-southeast-2 | \
-            docker login --username AWS --password-stdin 888042016323.dkr.ecr.ap-northeast-2.amazonaws.com/be-study
+            aws ecr get-login-password --region ap-northeast-2 | \
+            docker login --username AWS --password-stdin 888042016323.dkr.ecr.ap-northeast-2.amazonaws.com/be-study 
             docker pull 888042016323.dkr.ecr.ap-northeast-2.amazonaws.com/be-study:latest
             docker stop app || true && docker rm app || true
             docker run -d --name app -p 8080:8080 888042016323.dkr.ecr.ap-northeast-2.amazonaws.com/be-study:latest
