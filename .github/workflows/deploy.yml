@@ -47,6 +47,9 @@ jobs:
           username: ec2-user  # Amazon Linux 기본 사용자명
           key: ${{ secrets.EC2_KEY }}  # base64로 인코딩된 pem 키 (GitHub Secrets에 등록된 값)
           script: |
+            aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws configure set region ap-northeast-2
             aws ecr get-login-password --region ap-northeast-2 | \
             docker login --username AWS --password-stdin 888042016323.dkr.ecr.ap-northeast-2.amazonaws.com/be-study 
             docker pull 888042016323.dkr.ecr.ap-northeast-2.amazonaws.com/be-study:latest
