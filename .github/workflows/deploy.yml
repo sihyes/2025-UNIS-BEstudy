@@ -36,7 +36,7 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          IMAGE_URI=888042016323.dkr.ecr.ap-northeast-2.amazonaws.com/namespace/unis:latest
+          IMAGE_URI=888042016323.dkr.ecr.ap-northeast-2.amazonaws.com/be-study:latest
           docker build -t $IMAGE_URI .
           docker push $IMAGE_URI
 
