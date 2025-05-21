@@ -29,7 +29,7 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          IMAGE_URI=${{ secrets.ECR_REPOSITORY }}:latest  # 사용할 Docker 이미지 태그 정의
+          IMAGE_URI={888042016323.dkr.ecr.ap-southeast-2.amazonaws.com/namespace/unis}:latest  # 사용할 Docker 이미지 태그 정의
           docker build -t $IMAGE_URI .  # 현재 디렉토리(.)에 있는 Dockerfile을 기준으로 이미지 빌드
           docker push $IMAGE_URI  # 빌드한 이미지를 ECR에 push (업로드)
 
@@ -40,6 +40,8 @@ jobs:
           username: ec2-user  # Amazon Linux 기본 사용자명
           key: ${{ secrets.EC2_KEY }}  # base64로 인코딩된 pem 키 (GitHub Secrets에 등록된 값)
           script: |
-            docker pull ${{ secrets.ECR_REPOSITORY }}:latest  # 최신 이미지를 ECR에서 가져옴
-            docker stop app || true && docker rm app || true  # 기존 컨테이너가 있으면 중지하고 삭제 (에러 방지용)
-            docker run -d --name app -p 8080:8080 ${{ secrets.ECR_REPOSITORY }}:latest  # 새 컨테이너 실행 (8080 포트 연결)
+            aws ecr get-login-password --region ap-northeast-2 | \
+            docker login --username AWS --password-stdin 888042016323.dkr.ecr.ap-southeast-2.amazonaws.com/namespace/unis 
+            docker pull 888042016323.dkr.ecr.ap-southeast-2.amazonaws.com/namespace/unis:latest
+            docker stop app || true && docker rm app || true
+            docker run -d --name app -p 8080:8080 888042016323.dkr.ecr.ap-southeast-2.amazonaws.com/namespace/unis:latest
