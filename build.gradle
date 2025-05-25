@@ -31,3 +31,7 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+dependencies {
+	runtimeOnly 'com.mysql:mysql-connector-j'
+}
